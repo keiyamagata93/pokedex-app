@@ -1,25 +1,35 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import Form from './Form';
+import PokeDetails from './PokeDetails';
 
-function App() {
+const App = () => {
+  const [pokemon, setPokemon] = useState('pikachu');
+  const [pokemonData, setPokemonData] = useState([]);
+  const [pokemonType, setPokemonType] = useState('');
+
+  const getPokemon = async () => {
+    const toArray = [];
+    try {
+      const url = `https://pokeapi.co/api/v2/pokemon/${pokemon}`;
+      const res = await axios.get(url);
+      toArray.push(res.data);
+      setPokemonType(res.data.types[0].type.name);
+      setPokemonData(toArray);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+  console.log(pokemonData);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="app">
+      <h1>Pokedex</h1>
+      <p className="uitleg">Search your pokemon by name</p>
+      <Form pokemon={pokemon} setPokemon={setPokemon} getPokemon={getPokemon} />
+      <PokeDetails pokemonData={pokemonData} pokemonType={pokemonType} />
     </div>
   );
-}
+};
 
 export default App;
